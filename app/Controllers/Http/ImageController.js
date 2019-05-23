@@ -1,5 +1,10 @@
 'use strict'
 
+const Helpers = use('Helpers')
+const Image = use('App/Models/Image')
+const Product = use('App/Models/Product')
+
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -8,39 +13,36 @@
  * Resourceful controller for interacting with images
  */
 class ImageController {
-  /**
-   * Show a list of all images.
-   * GET images
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new image.
-   * GET images/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
 
   /**
    * Create/save a new image.
    * POST images
    *
    * @param {object} ctx
+   * @param {params} ctx.params
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, params }) {
+    const product = await Product.findOrFail(params.id)
+
+        const images = request.file('image', {
+          types: ['image'],
+          size: '2mb'
+        })
+
+        await images.moveAll(Helpers.tmpPath('uploads'), file => ({
+          name: `${Date.now()}-${file.clientName}`
+        }))
+
+        if (!images.movedAll()) {
+          return images.errors()
+        }
+
+        await Promise.all(
+          images
+            .movedList()
+            .map(image => product.images().create({ path: image.fileName }))
+        )
   }
 
   /**
@@ -48,23 +50,11 @@ class ImageController {
    * GET images/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
+   * @param {Params} ctx.params
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing image.
-   * GET images/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    return response.download(Helpers.tmpPath(`uploads/${params.path}`))
   }
 
   /**

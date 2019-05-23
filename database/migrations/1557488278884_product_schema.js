@@ -10,6 +10,13 @@ class ProductSchema extends Schema {
       table.string('title').notNullable()
       table.string('price').notNullable()
       table.string('description', 240).notNullable()
+      table
+        .integer('company_id')
+        .unsigned()
+        .references('id')
+        .inTable('companys')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
       table.timestamps()
     })
   }

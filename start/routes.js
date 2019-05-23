@@ -4,7 +4,14 @@
 const Route = use('Route')
 
 /** Authentication Routes */
-Route.post('/register', 'UserController.create')
-Route.post('/auth', 'AuthController.create')
+Route.post('/register', 'UserController.signup')
+Route.post('/auth', 'UserController.signin')
 
+/** Product Routes
+ *
+ * GET, POST, PUT and DELETE
+ */
+Route.resource('products', 'ProductsController')
+  .apiOnly()
+  .middleware('auth')
 
