@@ -20,9 +20,7 @@ class ProductController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const products = Product.query()
-      .with('images')
-      .fetch()
+    const products = Product.all()
 
     return products
   }
@@ -33,16 +31,15 @@ class ProductController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async store ({ request}) {
+  async store ({ request }) {
     const data = request.only([
       'title',
       'price',
       'description'
     ])
 
-    const product = await Product.create({...data})
+    const product = await Product.create(data)
 
     return product
 
@@ -77,7 +74,7 @@ class ProductController {
   async update ({ params, request }) {
     const product = await Product.findOrFail(params.id)
 
-    const data = requst.only([
+    const data = request.only([
       'title',
       'price',
       'description'

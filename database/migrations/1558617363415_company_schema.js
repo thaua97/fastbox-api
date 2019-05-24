@@ -5,22 +5,16 @@ const Schema = use('Schema')
 
 class CompanySchema extends Schema {
   up () {
-    this.create('companys', (table) => {
+    this.create('companies', (table) => {
       table.increments()
       table.string('name').notNullable()
       table.string('email').notNullable()
       table.string('CNPJ').notNullable()
-      table
-        .integer('admin_id')
-        .references('id')
-        .inTable('users')
-        .onUpdate('CASCADE')
-      table.timestamps()
     })
   }
 
   down () {
-    this.drop('companys')
+    this.drop('companies')
   }
 }
 

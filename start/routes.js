@@ -11,7 +11,7 @@ Route.post('/auth', 'UserController.signin')
  *
  * GET, POST, PUT and DELETE
  */
-Route.resource('products', 'ProductsController')
+Route.resource('products', 'ProductController')
   .apiOnly()
   .middleware('auth')
 

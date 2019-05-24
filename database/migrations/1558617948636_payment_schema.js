@@ -10,7 +10,6 @@ class PaymentSchema extends Schema {
       table.string('title')
       table.text('discription')
       table.timestamps()
-
     })
   }
 

@@ -10,11 +10,6 @@ class UserSchema extends Schema {
       table.string('username', 80).notNullable().unique()
       table.string('email', 254).notNullable().unique()
       table.string('password', 60).notNullable()
-      table.integer('company_id')
-        .references('id')
-        .inTable('companys')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
       table.timestamps()
     })
   }
