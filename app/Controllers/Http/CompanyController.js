@@ -1,6 +1,6 @@
 'use strict'
 
-const Company = use('App/Models/Compony')
+const Company = use('App/Models/Company')
 
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -34,14 +34,16 @@ class CompanyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request }) {
+  async store ({ request, auth }) {
+    const { id } = auth.user
+
     const data = request.only([
       'social_name',
-      'cnpj', 'type',
-      'responsible_id'
+      'cnpj',
+      'type',
     ])
 
-    const company = await Company.create(data)
+    const company = await Company.create({ ...data, user_id: id})
 
     return company
   }
@@ -56,7 +58,7 @@ class CompanyController {
   async show ({ params }) {
     const company = await Company.findOrFail(params.id)
 
-    await Company.load('users')
+    await company.load('users')
 
     return company
   }

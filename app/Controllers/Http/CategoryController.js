@@ -19,7 +19,9 @@ class CategoryController {
    *
    */
   async index () {
-    const category = await Category.all()
+    const category = await Category.query()
+      .with('images')
+      .fetch()
 
     return category
   }

@@ -10,7 +10,7 @@ class CompanySchema extends Schema {
       table.string('cnpj', 14).notNullable().unique()
       table.string('type').notNullable()
       table
-        .integer('responsible_id')
+        .integer('user_id')
         .unsigned()
         .references('id')
         .inTable('users')

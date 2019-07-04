@@ -4,14 +4,17 @@
 const Route = use('Route')
 
 /** Authentication Routes */
-Route.post('/register', 'UserController.signup')
-Route.post('/auth', 'UserController.signin')
+Route.post('/signup', 'UserController.signup')
+Route.post('/signin', 'UserController.signin')
 
-/** Product Routes
- *
- * GET, POST, PUT and DELETE
- */
 Route.resource('products', 'ProductController')
   .apiOnly()
   .middleware('auth')
 
+Route.resource('categories', 'CategoryController')
+  .apiOnly()
+  .middleware('auth')
+
+  Route.resource('companies', 'CompanyController')
+  .apiOnly()
+  .middleware('auth')

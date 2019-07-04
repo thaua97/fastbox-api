@@ -15,8 +15,11 @@ class UserController {
     const { email, password } = request.all()
 
     const token = await auth.attempt(email, password)
+    const user = await User.findBy('email', email)
 
-    return token
+    await user.load('images')
+    await user.load('tokens')
+    return { user, token }
   }
 
 }
