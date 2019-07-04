@@ -18,7 +18,7 @@ class UserController {
     const user = await User.findBy('email', email)
 
     await user.load('images')
-    await user.load('tokens')
+
     return { user, token }
   }
 
