@@ -3,6 +3,8 @@
 const Helpers = use('Helpers')
 const Image = use('App/Models/Image')
 const Product = use('App/Models/Product')
+const User = use('App/Models/User')
+const Category = use('App/Models/Category')
 
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -22,27 +24,79 @@ class ImageController {
    * @param {params} ctx.params
    * @param {Request} ctx.request
    */
-  async store ({ request, params }) {
+  async storeProductImage ({ request, params }) {
     const product = await Product.findOrFail(params.id)
 
-        const images = request.file('image', {
-          types: ['image'],
-          size: '2mb'
-        })
+    const images = request.file('image', {
+      types: ['image'],
+      size: '2mb'
+    })
 
-        await images.moveAll(Helpers.tmpPath('uploads'), file => ({
-          name: `${Date.now()}-${file.clientName}`
-        }))
+    const { id } = product
 
-        if (!images.movedAll()) {
-          return images.errors()
-        }
+    await images.moveAll(Helpers.tmpPath(`uploads/products/${id}`), file => ({
+      name: `${Date.now()}-${file.clientName}`
+    }))
 
-        await Promise.all(
-          images
-            .movedList()
-            .map(image => product.images().create({ path: image.fileName }))
-        )
+    if (!images.movedAll()) {
+      return images.errors()
+    }
+
+    await Promise.all(
+      images
+        .movedList()
+        .map(image => product.images().create({ path: image.fileName }))
+    )
+  }
+
+  async storeCategoryImage ({ request, params }) {
+    const category = await Category.findOrFail(params.id)
+
+    const images = request.file('image', {
+      types: ['image'],
+      size: '2mb'
+    })
+
+    const { id } = category
+
+    await images.moveAll(Helpers.tmpPath(`uploads/categories/${id}`), file => ({
+      name: `${Date.now()}-${file.clientName}`
+    }))
+
+    if (!images.movedAll()) {
+      return images.errors()
+    }
+
+    await Promise.all(
+      images
+        .movedList()
+        .map(image => category.images().create({ path: image.fileName }))
+    )
+  }
+
+  async storeUserImage ({ request, params }) {
+    const user = await User.findOrFail(params.id)
+
+    const images = request.file('image', {
+      types: ['image'],
+      size: '2mb'
+    })
+
+    const { id } = user
+
+    await images.moveAll(Helpers.tmpPath(`uploads/users/${id}`), file => ({
+      name: `${Date.now()}-${file.clientName}`
+    }))
+
+    if (!images.movedAll()) {
+      return images.errors()
+    }
+
+    await Promise.all(
+      images
+        .movedList()
+        .map(image => user.images().create({ path: image.fileName }))
+    )
   }
 
   /**
@@ -53,8 +107,22 @@ class ImageController {
    * @param {Params} ctx.params
    * @param {Response} ctx.response
    */
-  async show ({ params, response }) {
-    return response.download(Helpers.tmpPath(`uploads/${params.path}`))
+  async showProductImage ({ params, response }) {
+    return response.download(Helpers.tmpPath(
+      `uploads/products/${params.id}/${params.path}`
+    ))
+  }
+
+  async showCategoryImage ({ params, response }) {
+    return response.download(Helpers.tmpPath(
+      `uploads/categories/${params.id}/${params.path}`
+    ))
+  }
+
+  async showUserImage ({ params, response }) {
+    return response.download(Helpers.tmpPath(
+      `uploads/users/${params.id}/${params.path}`
+    ))
   }
 
   /**

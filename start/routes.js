@@ -15,6 +15,16 @@ Route.resource('categories', 'CategoryController')
   .apiOnly()
   .middleware('auth')
 
-  Route.resource('companies', 'CompanyController')
+Route.resource('companies', 'CompanyController')
   .apiOnly()
+  .middleware('auth')
+
+//Images Routes
+Route.post('/users/:id/image', 'ImageController.storeUserImage')
+  .middleware('auth')
+
+Route.post('/categories/:id/image', 'ImageController.storeCategoryImage')
+  .middleware('auth')
+
+Route.post('/companies/:id/image', 'ImageController.storeCompanyImage')
   .middleware('auth')

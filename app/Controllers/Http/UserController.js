@@ -21,7 +21,6 @@ class UserController {
 
     return { user, token }
   }
-
 }
 
 module.exports = UserController
